@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title>VITHub</title>
+        <link rel="stylesheet" type=" text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+        <link rel="stylesheet" type=" text/css" href="/stylesheets/app.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="background-color: rgb(104, 101, 101);height:auto">
+        <div class="ui fixed inverted menu">
+        <div class="ui container" >
+                <div class="header item"><i class="question small icon"></i><a class="logo">VITHub</a></div>
+                <a href="/blogs" class="item"><i class="Home small icon"></i>Home</a>
+                <a href="/answer" class="item"><i class="pencil alternate small icon"></i>Answer</a>
+                <a href="/blogs/new" class="item right but"><button class="ui basic blue button">Add Question</button></a>
+                <div class="item right heya" ><div class="dropdown">
+                    <button class="dropbtn"><i class="user small icon"></i><span class="profile">Profile</span>
+                      <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                      <div class="info">
+                        <a href="#"><i class="user circle small icon"></i><%= infos[0].name %></a>
+                        <a href="#"><i class="phone small icon"></i><%= infos[0].number%></a>    
+                      </div>
+                      <a class="hi" href="/content">Your Content</a>
+                      <a class="hi" href="/">Logout</a>
+                    </div>
+                  </div>
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    

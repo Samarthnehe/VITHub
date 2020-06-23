@@ -1,0 +1,28 @@
+<%- include('partials/header1'); %>
+<div class="ui main text container segment" style="margin-top:7em;width: 400px;background-color: black;border: 0.1px solid rgb(255, 255, 255);">
+    <div style="text-align: center;color: white;" class="ui header">LOGIN</div>
+    <form class="ui form" action="/login" method="POST">
+        <div class="field">
+            <label>Email</label>
+            <input type="text" name="info[email]"  class="form1" placeholder="Email" required>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="info[password]" class="form1"  placeholder="Password" required>
+        </div>
+                
+    <div style="padding-left: 130px;">
+        <button class="ui inverted blue small button">LOGIN</button>
+    </div>
+    
+</form>
+<div style="padding-top: 20px;" >
+    <h3 class="block" style="color: white;font-size: small;">New to VITHub?</h3>
+    <a href="/sign" class="block chain" style="float: right;">Sign Up</a>
+</div>
+</div>
+<div style="bottom: 30;right: 43%; position: fixed;">
+    <p class="love">Made with <i class="icon red small heart"></i> by Samarth Nehe</p>
+</div>
+
+<%- include('partials/footer1'); %>
