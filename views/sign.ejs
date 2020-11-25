@@ -1,18 +1,18 @@
 <%- include('partials/header1'); %>
-<div class="ui main text container segment" style="margin-top:7em;width: 400px;background-color: black;">
-    <div style="text-align: center;color: white;" class="ui header">SIGN UP</div>
+<div class="ui main text container segment" style="margin-bottom: 100px;">
+    <div style="text-align: center;color: white;font-family: 'Montserrat', sans-serif;" class="ui header">SIGN UP</div>
     <form class="ui form" action="/signin" method="POST">
         <div class="field">
-            <label>Name</label>
-            <input type="text" name="info[name]" class="form1" placeholder="Name">
+            <label>Username</label>
+            <input type="text" name="username" class="form1" placeholder="Name">
         </div>
         <div class="field">
             <label>Email</label>
-            <input type="text" name="info[email]" pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" class="form1" placeholder="Email">
+            <input type="text"  pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" class="form1" placeholder="Email">
         </div>
         <div class="field">
             <label>Password</label>
-            <input type="password" name="info[password]" class="form1" placeholder="Password" id="pass">
+            <input type="password" name="password" class="form1" placeholder="Password" id="pass">
             <div id="meter_wrapper">
                 <div id="meter"></div>
                </div>
@@ -20,20 +20,23 @@
         </div>
         <div class="field">
             <label>Phone</label>
-            <input type="text" name="info[number]" minlength=10 class="form1" placeholder="Phone Number">
+            <input type="text"  minlength=10 class="form1" placeholder="Phone Number">
         </div>
                 
-    <div style="padding-left: 130px;">
-        <input class="ui inverted purple small button" type="submit">
+    <div style="padding-left: 150px;">
+        <input class="btn btn-success" type="submit">
     </div>
     <div style="padding-top: 10px;padding-bottom: 30px;" >
-        <button class="ui basic blue small button" style="float: right;" ><a href="/">BACK</a></button>
+        <button class="btn btn-primary" style="float: right;" ><a href="/" style="color: black;"><b>Back</b></a></button>
     </div>
 </form>
 
 </div>
-<div style="bottom: 30;right: 43%; position: fixed;">
-    <p class="love">Made with <i class="icon red small heart"></i> by Samarth Nehe</p>
+<div style="background-color: white;margin-right: 200px;margin-left: 200px;border: 2px solid black;margin-top: 10px;height: auto;">
+    <div style="margin-left: 30px;margin-right: 30px;color: black;text-align: center;padding-top: 20px;padding-bottom: 20px;">
+        <h1>ABOUT <span style="color: red;font-size: xx-large;">VITHUB</span></h1>
+        <p style="font-weight:bold ;font-size: medium;">VITHub is a question-and-answer website, especially for VITians, where questions related to topics like Academics,Hostel-life,Subjects and Projects can be asked and answered by other VITians!This forum enables students to put their questions on board and have the assurity of getting it answered!</p>
+            </div>
 </div>
 
 

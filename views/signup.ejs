@@ -1,18 +1,18 @@
 <%- include('partials/header1'); %>
-<div class="ui main text container segment" style="margin-top:7em;width: 400px;background-color: black;border: 0.1px solid rgb(255, 255, 255);">
-    <div style="text-align: center;color: white;" class="ui header">LOGIN</div>
+<div class="ui main text container segment" style="margin-bottom: 100px;">
+    <div style="text-align: center;color: white;font-family: 'Montserrat', sans-serif;" class="ui header">LOGIN</div>
     <form class="ui form" action="/login" method="POST">
         <div class="field">
-            <label>Email</label>
-            <input type="text" name="info[email]"  class="form1" placeholder="Email" required>
+            <label>Username</label>
+            <input type="text" name="username"  class="form1" placeholder="Username" required>
         </div>
         <div class="field">
             <label>Password</label>
-            <input type="password" name="info[password]" class="form1"  placeholder="Password" required>
+            <input type="password" name="password" class="form1"  placeholder="Password" required>
         </div>
                 
-    <div style="padding-left: 130px;">
-        <button class="ui inverted blue small button">LOGIN</button>
+    <div style="padding-left: 170px;">
+        <button class="btn btn-primary">LOGIN</button>
     </div>
     
 </form>
@@ -21,8 +21,13 @@
     <a href="/sign" class="block chain" style="float: right;">Sign Up</a>
 </div>
 </div>
-<div style="bottom: 30;right: 43%; position: fixed;">
-    <p class="love">Made with <i class="icon red small heart"></i> by Samarth Nehe</p>
+<div style="background-color: white;margin-right: 200px;margin-left: 200px;border: 2px solid black;margin-top: 10px;height: auto;">
+    <div style="margin-left: 30px;margin-right: 30px;color: black;text-align: center;padding-top: 20px;padding-bottom: 20px;">
+        <h1>ABOUT <span style="color: red;font-size: xx-large;">VITHUB</span></h1>
+        <p style="font-weight:bold ;font-size: medium;">VITHub is a question-and-answer website, especially for VITians, where questions related to topics like Academics,Hostel-life,Subjects and Projects can be asked and answered by other VITians!This forum enables students to put their questions on board and have the assurity of getting it answered!</p>
+       
+    </div>
 </div>
+
 
 <%- include('partials/footer1'); %>

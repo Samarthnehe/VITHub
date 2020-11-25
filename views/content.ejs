@@ -1,18 +1,19 @@
 <%- include('partials/header'); %>
-<div class="row" style="background-color: rgb(104, 101, 101) ;">
+
     <div class="col heya">
-        <div class="hey" >
+        <div class="hey1" >
         <div class="top">
-            <h1 style="text-align: center;"><u>CONTENTS</u></h1>
+            <h1 style="text-align: center;font-family: 'Montserrat', sans-serif;">CONTENTS</h1>
         </div>
         <div class="topics">
             <div class="points">
-                <ul style="list-style-type:none;">
-                    <li><a>Questions asked</a></li>
-                    <li><a href="/content/ans">Answers</a></li>
-                    
+               
+                <div style="list-style-type:none;" class="list">
+                    <a href="/content">Questions asked</a>
+                    <a href="/content/ans">Answers</a>
                    
-                </ul>
+                    
+                </div>
             </div>
         </div>
         </div>
@@ -21,7 +22,7 @@
         
         <div class="ui main text " >
         <div class="ui huge header" style="margin-top: 100px;">Questions Asked</div>
-        <div class="ui top attached segment" style="background-color: rgb(104, 101, 101);border: 1px solid rgb(104, 101, 101);">
+        <div class="ui top attached segment" style="background-color: transparent;border: 1px solid transparent;">
             <div class="ui items">
                 <% blogs.forEach(function(blog){ if(blog.title!=null  ){
                     %>
@@ -29,13 +30,13 @@
                         
                         <div class="content" style="color: white;">
                             <div class="meta" style="margin: 10px;">
-                                <span><span style="font-size:small;color: rgb(252, 255, 102);"><%= infos[0].name %></span><span style="color: white;font-size: small;">- <%= blog.created.toDateString() %></span></span>
+                                <span><span style="font-size:small;color: rgb(252, 255, 102);"><%= currUser.username %></span><span style="color: white;font-size: small;">- <%= blog.created.toDateString() %></span></span>
                             </div>
                             <a class="header" href="/blogs/<%= blog._id %>" style="color: rgb(16, 188, 240);margin-top: 5px;margin-bottom: 10px;"><%= blog.title %></a>
                             
                             
                             <div class="extra">
-                                <a class="ui  basic mini yellow button" href="/blogs %>">
+                                <a class="ui  basic mini yellow button" href="/ %>">
                                     BACK
                                     <i class="left small chevron icon"></i>
                                 </a>
@@ -47,7 +48,7 @@
         </div>
     </div>
     </div>
-</div>
+
 
 
 <%- include('partials/footer');%>

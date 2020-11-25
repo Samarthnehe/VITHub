@@ -1,0 +1,129 @@
+<html>
+    <head>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+      
+        <title>VITHUB</title>
+        <link rel="stylesheet" type=" text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+        <link rel="icon" type="image/png" href="/images/logo.PNG" sizes="144x144">
+        <link rel="stylesheet" type=" text/css" href="/stylesheets/app.css">
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/sugar/2.0.6/locales/ca.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script>
+          $(function () {
+          setTimeout(function () {
+            $('#preloader').fadeOut('slow', function () {
+              $(this).remove();
+            });
+          }, 1500);
+        });
+        </script>
+        <script>
+          window.onload = function() {
+            document.getElementById("demo").onclick=function() {myFunction()};
+          
+            function myFunction() {
+              document.getElementsByClassName("col heya")[0].classList.toggle("mystyle");
+              }
+              
+            var label = document.getElementsByClassName("reps");
+            for (var i=0;i<label.length;i++){
+              label[i].onclick=functionRep(i);
+            }
+            
+            function functionRep(i) {
+              return function(){ 
+                console.log(document.getElementsByClassName("rep"));
+                document.getElementsByClassName("rep")[i].classList.toggle("myreply");
+
+              }
+             
+              }
+
+            
+          };
+ 
+        </script>
+         
+      
+    </head>
+    <body style="background-image: url(/images/back.png);background-position: center;background-size: cover;">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top " >
+        <div class="container-fluid">
+            <img src="/images/logo.PNG" width="60px" height="60px">
+          <button  class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+             
+            </div>
+           
+            <div class="navbar-nav">
+              <a class="nav-item nav-link" href="/" ><i class="Home large icon"></i>Home</a>
+              <a class="nav-item nav-link" href="/answer"><i class="pencil alternate large icon"></i>Answer</a>
+              
+              <a class="nav-item nav-link btn btn-success" href="/blogs/new" >Add Question</a>
+              <% if(!currUser){ %>
+                <a class="nav-item nav-link" style="padding-left: 15px;" href="/log"><i class="sign-in alternate large icon"></i> Login</a>
+              
+              <%} else{%>
+              <a class="nav-item nav-link" ><div class="dropdown1">
+                <button class="dropbtn1"><i class="user large icon black"></i><span class="profile" style="color: black;font-weight: 600;">Profile</span>
+                  <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content1">
+                  <div class="info">
+                    <a href="#"><i class="user circle large icon"></i><b><%= currUser.username %></b></a>
+                       
+                  </div>
+                  <a class="hi" href="/content">Your Content</a>
+                  <a class="hi" href="/logout">Logout</a>
+                </div>
+              </div>
+            </a>
+            <% } %>
+              
+            </div>
+            
+          </div>
+          
+        </div>
+      </nav>
+
+<div class="ui main text container segment hey" style="margin-bottom: 0px;overflow-y: hidden;">
+    <div class="ui huge header" style="color: rgb(10, 199, 233);"> <%= blog.body[0].ans %></div>
+    <form class="ui form" action="/blogs/<%= blog._id%>/reply?_method=PUT" method="POST">
+        
+        <div class="field">
+            <label>Your Reply</label>
+            <textarea  class="form1" name="reply[ans]" placeholder="Write your reply here" required></textarea>
+        </div>
+    
+  
+        
+
+    <input class="btn btn-success" type="submit">
+</form>
+<a href="/" style="color: black;"><button class="btn btn-warning" style="display: inline;"><b>Back</b></button></a>
+</div>
+<script>
+  $(document).ready(function () {
+$(window).on('scroll', function () {
+
+if ($(this).scrollTop() > 0) {
+if (!$('nav').hasClass('navbar-scrolled')) {
+    $('nav').addClass('navbar-scrolled');
+    console.log()
+}
+} else {
+if ($('nav').hasClass('navbar-scrolled')) {
+    $('nav').removeClass('navbar-scrolled');
+}
+}
+});
+
+})
+</script>
+</body>

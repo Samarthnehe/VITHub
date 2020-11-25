@@ -1,35 +1,35 @@
 <%- include('partials/header'); %>
-<div class="row" style="background-color: rgb(104, 101, 101) ;">
+
     <div class="col heya" >
-        <div class="hey">
-        <div class="top" >
-            <h1 style="text-align: center;"><u>CONTENTS</u></h1>
+        <div class="hey1">
+        <div class="top">
+            <h1 style="text-align: center;font-family: 'Montserrat', sans-serif;">CONTENTS</h1>
         </div>
         <div class="topics">
             <div class="points">
-                <ul style="list-style-type:none;">
-                    <li><a href="/content">Questions asked</a></li>
-                    <li><a href="/content/ans">Answers</a></li>
-                    
+                <div style="list-style-type:none;" class="list">
+                    <a href="/content">Questions asked</a>
+                    <a href="/content/ans">Answers</a>
                    
-                </ul>
+                    
+                </div>
             </div>
         </div>
         </div>
     </div>
-    <div class="col hi" >
+    <div class="col hi"  >
         
-        <div class="ui main text ">
+        <div class="ui main text " >
         <div class="ui huge header" style="margin-top: 100px;">Answered Posts</div>
-        <div class="ui top attached segment" style="background-color: rgb(104, 101, 101);border: 1px solid rgb(104, 101, 101);">
+        <div class="ui top attached segment" style="background-color: transparent;border: 1px solid transparent;">
             <div class="ui items">
                 <% blogs.forEach(function(blog){ 
                     %>
-                    <% var flag=0;for(var i=0;i<blog.body.length;i++){ if(blog.body[i].ans!="" && blog.body[i].name==infos[0].name){
+                    <% var flag=0;for(var i=0;i<blog.body.length;i++){ if(blog.body[i].ans!="" && blog.body[i].name==currUser.username){
                         flag=flag+1;}}
                         console.log(flag);
                         if( flag!=0){
-                            for(var j=0;j<blog.body.length;j++){if(blog.body[j].ans!="" && blog.body[j].name==infos[0].name){
+                            for(var j=0;j<blog.body.length;j++){if(blog.body[j].ans!="" && blog.body[j].name==currUser.username){
                         
                         %>
                     <div class="item sam">
@@ -47,7 +47,7 @@
                                </div>
                             
                             <div class="extra">
-                                <a class="ui  basic mini yellow button" href="/blogs %>">
+                                <a class="ui  basic mini yellow button" href="/ %>">
                                     BACK
                                     <i class="left small chevron icon"></i>
                                 </a>
@@ -64,6 +64,5 @@
     </div>
     </div>
 </div>
-
-
 <%- include('partials/footer');%>
+

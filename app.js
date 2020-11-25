@@ -2,19 +2,46 @@ var express     = require("express"),
 methodOverride  = require("method-override"),
 expressSanitizer=require("express-sanitizer"),
 bodyParser      =require("body-parser"),
+flash           =require("connect-flash"),
+passport        =require("passport"),
+LocalStrategy   =require("passport-local"),
+passportLocal   =require("passport-local-mongoose"),
 mongoose        =require("mongoose"), 
 app             =express();
 
 mongoose.connect("mongodb+srv://dbUser:dbUser@cluster0-asksu.mongodb.net/restful_blog_app?retryWrites=true&w=majority");
+app.use(require("express-session")({
+    secret:"Hey is this Samarth",
+    resave:false,
+    saveUninitialized:false 
+}));
 app.set("view engine","ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(expressSanitizer());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(methodOverride("_method"));
+app.use(flash());
+app.use(function(req,res,next){
+    res.locals.error=req.flash("error");
+    res.locals.success=req.flash("success");
+    next();
+});
 
-var ansSchema=new mongoose.Schema({
+var likeSchema = new mongoose.Schema({
+    name:String
+})
+var replySchema = new mongoose.Schema({
     ans:String,
     name:String
+})
+var ansSchema=new mongoose.Schema({
+    ans:String,
+    name:String,
+    like:Number,
+    reply:[replySchema],
+    liked:[likeSchema]
 })
 var blogSchema = new mongoose.Schema({
     title: String,
@@ -25,68 +52,98 @@ var blogSchema = new mongoose.Schema({
     genre:String
     
 });
-var infoSchema= new mongoose.Schema({
-    email: String,
-    password:String,
-    name:String,
-    number:String
+var UserSchema= new mongoose.Schema({
+    
+    username:String,
+    password:String
+    
+    
+    
 })
+
+UserSchema.plugin(passportLocal);
 
 var Ans=mongoose.model("Ans",ansSchema);
 
 var Blog=mongoose.model("Blog",blogSchema);
 
-var Info=mongoose.model("Info",infoSchema);
+var User=mongoose.model("User",UserSchema);
+
+var Reply= mongoose.model("Reply",replySchema);
+
+var Like= mongoose.model("Like",likeSchema);
+
+passport.use(new LocalStrategy(User.authenticate()));  
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+function isLoggedIn(req,res,next){ 
+    if(req.isAuthenticated()){
+        return next();
+    }
+    req.flash("error","Please Login First!");
+    res.redirect("/log");
+}
 
 app.get("/",function(req,res){
-    res.render("signup");
     
-})
-app.post("/login",function(req,res){
-    var email=req.body.info.email;
-    var pass=req.body.info.password;
-
-    Info.find({email:email,password:pass},function(err,infos){
-        
-        global.info = infos;
-        ;
-        if(infos[0]==null || infos[0].email!=email){
-            res.redirect("/");
-            
+    Blog.find({},function(err,blogs){
+        if (err){
+            console.log("ERROR!");
         }
         else{
-            Blog.find({},function(err,blogs){
-                if(err){
-                    res.redirect("/");
-                }
-                else{
-                    res.render("all",{blogs:blogs,infos:infos});
-                }
-            })
-            
+            res.render("all",{blogs:blogs,currUser:req.user});
             
         }
     })
+    
+    
+    
 })
 
-app.get("/content",function(req,res){
-    Blog.find({name:info[0].name},function(err,foundBlog){
+app.get("/log",function(req,res){
+    
+    res.render("signup");
+})
+
+app.post("/login",passport.authenticate("local",{
+    successFlash:"Welcome to VITHub! ",
+    successRedirect: "/",
+    failureFlash: true,
+    failureRedirect: "/log"
+}),function(req,res){ 
+    
+    
+
+   
+});
+
+app.get("/logout",function(req,res){
+    req.logout();
+    req.flash("success","Successfully logged out!");
+    res.redirect("/");
+});
+
+
+app.get("/content",isLoggedIn,function(req,res){
+    Blog.find({name:req.user.username},function(err,foundBlog){
         if(err){
             console.log(err);
         }
         else{
-            res.render("content",{blogs:foundBlog,infos:info})
+            res.render("content",{blogs:foundBlog,currUser:req.user})
         }
     })
 })
 
-app.get("/content/ans",function(req,res){
+app.get("/content/ans",isLoggedIn,function(req,res){
     Blog.find({},function(err,foundBlog){
         if(err){
             console.log(err);
         }
         else{
-            res.render("answered",{blogs:foundBlog,infos:info})
+            res.render("answered",{blogs:foundBlog,currUser:req.user})
         }
     })
 })
@@ -96,192 +153,309 @@ app.get("/sign",function(req,res){
 })
 
 app.post("/signin",function(req,res){
-    Info.create(req.body.info,function(err,infoBlog){
-        if(err){
-            console.log(err);
-        }else{
-            res.redirect("/");
-        }
-    })
-
-})
-
-app.get("/blogs",function(req,res){
-    if(info[0].email!=null && info[0].password!=null){
-    Blog.find({},function(err,blogs){
-        if (err){
-            console.log("ERROR!");
-        }
-        else{
-            res.render("all",{blogs:blogs,infos:info});
-        }
-    })
-    }
-    else{
-        res.redirect("/");
-    }
     
+    User.register(new User({username:req.body.username}),req.body.password,function(err,user){
+        if(err){
+            
+            return res.redirect("/");
+        }
+        
+        passport.authenticate("local")(req,res,function(){
+            req.flash("success","Signed in as "+ user.username);
+            res.redirect("/");
+         });
+        
+    });
+
+    
+
 })
 
-app.get("/blogs/academics",function(req,res){
+
+
+app.get("/blogs/academics",isLoggedIn,function(req,res){
     Blog.find({genre:"Academics"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("academics",{blogs:foundBlog,infos:info});
+            res.render("academics",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/hostel",function(req,res){
+app.get("/blogs/hostel",isLoggedIn,function(req,res){
     Blog.find({genre:"Hostel"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("hostel",{blogs:foundBlog,infos:info});
+            res.render("hostel",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/mess",function(req,res){
+app.get("/blogs/mess",isLoggedIn,function(req,res){
     Blog.find({genre:"Mess"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("mess",{blogs:foundBlog,infos:info});
+            res.render("mess",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/roomallotment",function(req,res){
+app.get("/blogs/roomallotment",isLoggedIn,function(req,res){
     Blog.find({genre:"RoomAllotment"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("roomallotment",{blogs:foundBlog,infos:info});
+            res.render("roomallotment",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/books",function(req,res){
+app.get("/blogs/books",isLoggedIn,function(req,res){
     Blog.find({genre:"Books"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("books",{blogs:foundBlog,infos:info});
+            res.render("books",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/projects",function(req,res){
-    Blog.find({genre:"Projects"},function(err,foundBlog){
+app.get("/blogs/projects",isLoggedIn,function(req,res){
+    Blog.find({genre:"Project"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("projects",{blogs:foundBlog,infos:info});
+            res.render("projects",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/faculty",function(req,res){
+app.get("/blogs/faculty",isLoggedIn,function(req,res){
     Blog.find({genre:"Faculty"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("faculty",{blogs:foundBlog,infos:info});
+            res.render("faculty",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/subjects",function(req,res){
+app.get("/blogs/subjects",isLoggedIn,function(req,res){
     Blog.find({genre:"Subjects"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("subjects",{blogs:foundBlog,infos:info});
+            res.render("subjects",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/ffcs",function(req,res){
+app.get("/blogs/ffcs",isLoggedIn,function(req,res){
     Blog.find({genre:"FFCS"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("ffcs",{blogs:foundBlog,infos:info});
+            res.render("ffcs",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
 
-app.get("/blogs/transport",function(req,res){
+app.get("/blogs/transport",isLoggedIn,function(req,res){
     Blog.find({genre:"Transport"},function(err,foundBlog){
         if(err){
             res.redirect("/blogs");
         }else{
-            res.render("transport",{blogs:foundBlog,infos:info});
+            res.render("transport",{blogs:foundBlog,currUser:req.user});
             
         }
     })
 })
-app.get("/answer",function(req,res){
+app.get("/answer",isLoggedIn,function(req,res){
     Blog.find({},function(err,blogs){
         if (err){
             console.log("ERROR!");
         }
         else{
-            res.render("answer",{blogs:blogs,infos:info});
+            res.render("answer",{blogs:blogs,currUser:req.user});
         }
     })
 })
 
 //NEW
-app.get("/blogs/new",function(req,res){
+app.get("/blogs/new",isLoggedIn,function(req,res){
     
-    res.render("new",{infos:info});
+    res.render("new",{currUser:req.user});
 })
 //RESTFUL ROUTES
-app.post("/blogs",function(req,res){
-    req.body.blog.name=info[0].name;
+app.post("/",isLoggedIn,function(req,res){
+    req.body.blog.name=req.user.username;
     if(req.body.blog.title!=""){
         
         Blog.create(req.body.blog,function(err,newBlog){
             if(err){
                 console.log(err);
             }else{
-                res.redirect("/blogs");
+                req.flash("success","Post added successfully!")
+                res.redirect("/");
                 
             }
         }) 
     }else{
-        res.redirect("/blogs");
+        res.redirect("/");
     }
 })
 
-app.get("/blogs/:id",function(req,res){
+app.get("/blogs/:id",isLoggedIn,function(req,res){
     Blog.findById(req.params.id,function(err,foundBlog){
         if(err){
             console.log(err);
         }else{
             
-             res.render("ans",{blog:foundBlog,infos:info});
+             res.render("ans",{blog:foundBlog,currUser:req.user});
         }
     })
     
 })
 
+app.put("/blogs/:id/like",isLoggedIn,function(req,res){
+    req.body.like.name=req.user.username;
+    Like.create(req.body.like,function(err,like){
+        if(err){
+            console.log(err);
+        }else{
+            Blog.findById(req.params.id,function(err,foundBlog){
+                if(err){
+                    console.log(err);
+                }else{
+                    
+                    foundBlog.body[0].like+=1;
+                    foundBlog.body[0].liked.push(like);
+                    foundBlog.save();
+                    console.log(foundBlog);
+                    Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blogs){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            res.redirect("/");
+                            
+                        }
+                    })
+                }
+              
+            })
+        }
+
+    }) 
+})
 
 
-app.put("/blogs/:id",function(req,res){
-    req.body.ans.name=info[0].name;
+
+app.put("/blogs/:id/like1",isLoggedIn,function(req,res){
+    req.body.like.name=req.user.username;
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            console.log(err);
+        }else{
+            if(foundBlog.body[0].like!=0){foundBlog.body[0].like-=1;}
+            
+            for (var i =0; i < foundBlog.body[0].liked.length; i++)
+                if (foundBlog.body[0].liked[i].name == req.user.username) {
+                    foundBlog.body[0].liked.splice(i,1);
+                    break;
+                }
+            foundBlog.save();
+            
+            Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blogs){
+                if(err){
+                    console.log(err);
+                }else{
+                    res.redirect("/");
+                    
+                }
+            })
+        }
+      
+    })
+})
+app.put("/blogs/:id/:i/likes",isLoggedIn,function(req,res){
+    req.body.like.name=req.user.username;
+    Like.create(req.body.like,function(err,like){
+        if(err){
+            console.log(err);
+        }else{
+            Blog.findById(req.params.id,function(err,foundBlog){
+                if(err){
+                    console.log(err);
+        
+                }else{
+                    
+                    console.log(foundBlog.body[req.params.i]);
+                    foundBlog.body[req.params.i].like+=1;
+                    foundBlog.body[req.params.i].liked.push(like);
+                    foundBlog.save();
+                    
+                    Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blogs){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            res.redirect("/blogs/"+req.params.id+"/view");
+                            
+                        }
+                    })
+                }
+              
+            })
+        }
+
+    })
+})
+
+app.put("/blogs/:id/:i/likes1",isLoggedIn,function(req,res){
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            console.log(err);
+
+        }else{
+            
+            if(foundBlog.body[req.params.i].like!=0){foundBlog.body[req.params.i].like-=1;;}
+            
+            for (var j =0; j < foundBlog.body[req.params.i].liked.length; j++)
+                        if (foundBlog.body[req.params.i].liked[j].name == req.user.username) {
+                            foundBlog.body[req.params.i].liked.splice(j,1);
+                            break;
+                        }
+                    foundBlog.save();
+            foundBlog.save();
+            
+            Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blogs){
+                if(err){
+                    console.log(err);
+                }else{
+                    res.redirect("/blogs/"+req.params.id+"/view");
+                    
+                }
+            })
+        }
+      
+    })
+})
+
+
+app.put("/blogs/:id",isLoggedIn,function(req,res){
+    req.body.ans.name=req.user.username;
+    req.body.ans.like=0;
     Ans.create(req.body.ans,function(err,ans){
         if(err){
             console.log(err);
@@ -298,7 +472,7 @@ app.put("/blogs/:id",function(req,res){
                         if(err){
                             console.log(err);
                         }else{
-                            res.redirect("/blogs");
+                            res.redirect("/");
                         }
 
                         
@@ -320,16 +494,8 @@ app.put("/blogs/:id",function(req,res){
 })
 
 //DELETE
-app.delete("/blogs/:id",function(req,res){
-    Blog.findByIdAndDelete(req.params.id,function(err,delBlog){
-        if(err){
-            res.redirect("/blogs");
-        }else{
-            res.redirect("/blogs");
-        }
-    })
-})
-app.get("/blogs/:id/view",function(req,res){
+
+app.get("/blogs/:id/view",isLoggedIn,function(req,res){
     Blog.findById(req.params.id,function(err,foundBlog){
         if(err){
             console.log(err);
@@ -342,7 +508,89 @@ app.get("/blogs/:id/view",function(req,res){
                 }
             }
         
-            res.render("view",{blog:foundBlog,infos:info,count:count});
+            res.render("view",{blog:foundBlog,currUser:req.user,count:count});
+        }
+    })
+})
+
+app.get("/blogs/:id/reply",isLoggedIn,function(req,res){
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            console.log(err);
+        }else{
+            
+            res.render("reply",{blog:foundBlog,currUser:req.user});
+        }
+    })
+    
+})
+
+app.put("/blogs/:id/reply",isLoggedIn,function(req,res){
+
+    req.body.reply.name=req.user.username;
+    Reply.create(req.body.reply,function(err,foundReply){
+        if(err){
+            console.log(err);
+        }else{
+            
+            Blog.findById(req.params.id,function(err,foundBlog){
+                
+                if(err){
+                    console.log(err);
+                }else{
+                    foundBlog.body[0].reply.push(foundReply);
+                    foundBlog.save();
+                    Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blog){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            res.redirect("/");
+                        }
+                    })
+                }
+
+            })
+        }
+    })
+})
+
+app.get("/blogs/:id/:i/reply",isLoggedIn,function(req,res){
+    Blog.findById(req.params.id,function(err,foundBlog){
+        if(err){
+            console.log(err);
+        }else{
+            
+            res.render("reply1",{blog:foundBlog,currUser:req.user,i:req.params.i});
+        }
+    })
+    
+})
+
+app.put("/blogs/:id/:i/replys",function(req,res){
+
+    req.body.reply.name=req.user.username;
+    Reply.create(req.body.reply,function(err,foundReply){
+        if(err){
+            console.log(err);
+        }else{
+            console.log(foundReply);
+            Blog.findById(req.params.id,function(err,foundBlog){
+                
+                if(err){
+                    console.log(err);
+                }else{
+                    foundBlog.body[req.params.i].reply.push(foundReply);
+                    foundBlog.save();
+                    Blog.findByIdAndUpdate(req.params.id,foundBlog,function(err,blog){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            res.redirect("/");
+                        }
+                    })
+                }
+
+            })
         }
     })
 })

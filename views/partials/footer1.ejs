@@ -1,2 +1,20 @@
-    </body>
+<script>
+    $(document).ready(function () {
+$(window).on('scroll', function () {
+
+if ($(this).scrollTop() > 0) {
+  if (!$('nav').hasClass('navbar-scrolled')) {
+      $('nav').addClass('navbar-scrolled');
+      console.log()
+  }
+} else {
+  if ($('nav').hasClass('navbar-scrolled')) {
+      $('nav').removeClass('navbar-scrolled');
+  }
+}
+});
+
+})
+</script>
+</body>
 </html>
