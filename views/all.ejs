@@ -49,20 +49,25 @@
                                                 
                                             </div>
                                             <div style="padding-top: 5px;">
-                                                <span style="font-size: medium;"><%= blog.body[0].ans %></span> 
+                                                <span style="font-size: medium;line-height: 30px;"><%= blog.body[0].ans %></span> 
                                             </div>
-                                            <div class="rep">
-                                                <% if(blog.body[0].reply!=null){
-                                                    for (var i=0;i<blog.body[0].reply.length;i=i+1){%>
-                                                <div style="background-color: rgb(41, 102, 25);border: 0.5px solid rgb(0, 0, 0);margin-top: 10px;padding: 8px;margin-left: 0px;margin-right: 0px;box-shadow:3px 3px rgba(0,0,0,0.5)">
-                                                    <span style="color: yellow;margin-bottom: 2px;"><%=blog.body[0].reply[i].name%></span>
-                                                    <p><%=blog.body[0].reply[i].ans%></p>
+                                            <% if(blog.body[0].reply.length!=0){%>
+                                                <div class="rep">
                                                     
-
-                                                </div>
+                                                       <% for (var j=0;j<blog.body[0].reply.length;j=j+2){%>
+                                                    <div style="background-color: rgb(41, 102, 25);margin-right:10px;margin-left: 1px;margin-top:5px;border-radius: 5px;border: 0.1px solid rgb(0, 0, 0);padding: 8px;">
+                                                        <span style="color: yellow;margin-bottom: 2px;"><%=blog.body[0].reply[j].name%></span>
+                                                        <p><%=blog.body[0].reply[j].ans%></p>
+                                                        
+                            
+                                                    </div>
                                                 
-                                                <%}}%>
-                                            </div>
+                                                     
+                                                       
+                                                </div>
+                                                <%}}else{%>
+                                                    <div style="height: 0;"></div>
+                                                <%}%>
                                             <% if(currUser){
                                                 var flag=0;for (var k=0;k<blog.body[0].liked.length;k++){
                                                 if (blog.body[0].liked[k].name==currUser.username){
@@ -70,25 +75,35 @@
                                                 }
                                             }}%>
                                             <div style="height:20px;background-color: rgb(3, 39, 30);margin-top: 5px;font-size: small;">
-                                                <span style="float:right;padding-right:10px;"><%=blog.body[0].like%> likes</span>
-                                                <span class="reps" style="float:right;padding-right:10px;"><%=(blog.body[0].reply.length)%> comments</span>
-                                            </div>
-                                            <div style="margin-top: 10px;border-top: 0.5px solid black;padding-left: 5px;padding-right: 30px;display: flex;margin-top: 5px;">
-                                                 
                                                 
-                                                <% if (flag==0){%>
-                                                <form  id="my_form"  style="flex: 50%;margin-bottom: 0px;margin-top: 5px;padding-right: 50px;" action="blogs/<%=blog._id %>/like?_method=PUT" method="POST"   > 
-                                                    
-                                                    <button name="like[name]" class="btn btn-success " style="padding: 7px;width:90px;display: flex;" ><i  class="thumbs up large  icon" style="padding-left: 5px;"></i><span style="color: black;"><b>Like</b></span></button>
-                                                </form>
-                                                <%}else{%>
-                                                    <form  id="my_form" style="flex: 50%;margin-bottom: 0px;margin-top: 5px;padding-right: 50px;" action="blogs/<%=blog._id %>/like1?_method=PUT" method="POST" > 
-                                                    
-                                                        <button name="like[name]" class="btn btn-danger " style="padding: 7px;width:90px;display: flex;" ><i  class="thumbs down large  icon" style="padding-left: 5px;"></i><span style="color: black;"><b>Dislike</b></span></button>
-                                                    </form>
+                                                <span id="likes" style="float:right;padding-right:10px;"><span><%=blog.body[0].like%></span> likes</span>
+                                                
+                                                <%if(((blog.body[0].reply.length)/2)==1){%>
+                                                    <span class="reps" style="float:right;padding-right:10px;"><%=(blog.body[0].reply.length)/2%> comment</span>
+                                                    <%}else{%>
+                                                        <span class="reps" style="float:right;padding-right:10px;"><%=(blog.body[0].reply.length)/2%> comments</span>
+                                                        <%}%>
+                                            </div>
+                                            <div style="margin-top: 10px;border-top: 0.5px solid black;padding-left: 5px;display: flex;margin-top: 5px;display: flex;justify-content: space-between;align-items: center;">
+                                                 
+                                                <div style="display: flex;justify-content: center;align-items: center;">
+                                                    <% if (flag==0){%>
+                                                        <form  id="my_form"  style="flex: 50%;margin-bottom: 0px;margin-top: 5px;padding-right: 50px;"  method="POST" action="blogs/<%=blog._id%>/like?_method=PUT"  > 
+                                                            
+                                                            <button  name="like[name]" class="btn btn-success " style="padding: 7px;width:90px;display: flex;" ><i  class="thumbs up large  icon" style="padding-left: 5px;"></i><span style="color: black;"><b>Like</b></span></button>
+                                                        </form>
+                                                        <%}else{%>
+                                                            <form  id="my_form" style="flex: 50%;margin-bottom: 0px;margin-top: 5px;padding-right: 50px;"  method="POST" > 
+                                                            
+                                                                <button disabled name="like[name]" class="btn btn-success " style="padding: 7px;width:90px;display: flex;" ><i  class="thumbs up large  icon" style="padding-left: 5px;"></i><span style="color: black;"><b>Like</b></span></button>
+                                                            </form>
+        
+        
+                                                            <%}%>
+                                                          
+                                                </div>
 
-
-                                                    <%}%>
+                                                
                                                 <a  href="blogs/<%=blog._id%>/reply" class="btn btn-info reply sama" style="color:black;" ><i class="comment outline icon large"></i><b>Comment</b></a>
                                             </div>
                                            

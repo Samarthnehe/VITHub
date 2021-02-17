@@ -122,7 +122,7 @@
     <form class="ui form" action="/blogs/<%= blog._id%>?_method=PUT" method="POST">
         <div class="field">
             <label>Name</label>
-            <input type="text" name="ans[name]" class="form1" value="<%=currUser.username %>">
+            <input disabled type="text" name="ans[name]" class="form1" value="<%=currUser.username %>">
         </div>
         <div class="field">
             <label>Your Answer</label>
@@ -135,7 +135,7 @@
 
     <input class="btn btn-success" type="submit">
 </form>
-<a href="/" ><button class="btn btn-warning" style="display: inline;color: white;">Back</button></a>
+<a href="/" ><button class="btn btn-warning" style="display: inline;color: black;">Back</button></a>
 </div>
 </div>
 <script>

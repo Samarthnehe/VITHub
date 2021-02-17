@@ -48,7 +48,7 @@
          
       
     </head>
-    <body style="background-image: url(/images/back.png);background-position: center;background-size: cover;">
+    <body style="background-image: url(/images/back.png);background-position: center;background-size: cover;background-attachment: fixed;">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top " >
         <div class="container-fluid">
             <img src="/images/logo.PNG" width="60px" height="60px">
@@ -107,19 +107,21 @@
         <div class="field" style="width: 50%;margin: 0 auto;margin-bottom: 10px;">
         <label>Genre</label>
         <select name="blog[genre]" class="form1" required>
-            <option value="Academics">Headache</option>
-            <option value="Hostel">Asthama</option>
-            <option value="Mess">Covid-19</option>
-            <option value="RoomAllotment">Stomach Ache</option>
-            <option value="Books">Heart</option>
-            <option value="Projects">General</option>
-            <option value="Faculty">Bones</option>
-            <option value="Subjects">Others</option>
+          <option value="Academics">Academics</option>
+          <option value="Hostel">Hostel</option>
+          <option value="Mess">Mess</option>
+          <option value="RoomAllotment">RoomAllotment</option>
+          <option value="Books">Books</option>
+          <option value="Projects">Projectsl</option>
+          <option value="Faculty">Faculty</option>
+          <option value="Subjects">Subjects</option>
+          <option value="FFCS">FFCS</option>
+          <option value="Transport">Transport</option>
             
           </select>
         </div>
-        <input class="btn btn-success" type="submit" value="Add Question">
-        <a href="/"><button  style=" float: right; display: inline;" class="btn btn-primary">BACK</button></a>
+        <input class="btn btn-success" type="submit" style="color: black; font-weight: 600;"value="Add Question">
+        <a href="/"><button  style=" float: right; display: inline;color: black;font-weight: 600;" class="btn btn-primary">BACK</button></a>
     </form>
     
 
