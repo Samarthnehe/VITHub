@@ -110,8 +110,12 @@ padding-left: 15px;
 .block{
   display: inline;
 }
+.ui.items>.item>.content>.header{
+  font-family: 'Montserrat', sans-serif;
+}
 .ui.huge.header{
 margin-top: 10px;
+font-family: 'Montserrat', sans-serif;
 }
 .ui.huge.header.heya{
 margin-top: 100px;
@@ -126,7 +130,7 @@ margin-top: 100px;
 #meter_wrapper
 {
 border:0.5px solid rgb(126, 122, 122);
-margin-left:25%;
+
 margin-top:10px;
 width:150px;
 height:19px;
@@ -149,7 +153,7 @@ height:17px;
 {
 font-size:12px;
 margin-top:10px;
-margin-left:38%;
+
 text-align:center;
 color:rgb(0, 0, 0);
 }
@@ -242,7 +246,7 @@ width:60%;overflow: auto;margin-left: 40%;min-height: 700px;
   border: 0.1px solid rgb(245, 245, 245);
 }
 .ui.main.container{
-margin-top:7em;background-color: rgba(0, 0, 0,0.9);border-radius: 10px;border: 1px solid rgb(0, 0, 0);width: 500px;overflow: hidden;margin-bottom: 320px;padding-right: 10px;padding-left: 10px;
+margin-top:7em;background-color: rgba(0, 0, 0,0.9);border-radius: 10px;border: 1px solid rgb(0, 0, 0);width: 80%;overflow: hidden;margin-bottom: 20px;padding-right: 10px;padding-left: 10px;
 }
 .ui.main.text{
 padding-right: 40px;padding-left: 40px;
@@ -274,10 +278,11 @@ display: inline;
 }
 .col.heya{
 width:40%;
-height: auto;padding-left: 90px;padding-top: 105px;padding-right: 180px; border-right: black;position: fixed;top: 0;left: 0;
+height: 100vh;padding-top: 105px; border-right: black;position: fixed;top: 0;left: 0;
+display: flex;justify-content: center;align-items: center;
 }
 .hey1{
-background-color: rgb(0, 0, 0);padding-top:20px;padding-bottom: 20px;border: 0.1px solid rgb(255, 255, 255);border-radius: 15px;color: white;
+background-color: rgb(0, 0, 0);padding-top:20px;padding-bottom: 20px;border: 0.1px solid rgb(255, 255, 255);border-radius: 15px;color: white;width: 75%;
 }
 div.tooltip:hover span.tooltiptext{
 visibility: visible;
